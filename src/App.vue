@@ -36,7 +36,7 @@ export default {
     }
   },
   mounted () {
-    if (!this.$store.state.categories) {
+    if (this.$store.getters.isLoggedIn && !this.$store.state.categories) {
       this.$store.dispatch('set_categories')
     }
   

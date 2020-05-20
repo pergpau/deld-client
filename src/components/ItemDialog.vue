@@ -65,12 +65,12 @@
 
           <v-dialog
             v-model="delete_dialog"
+            v-if="$store.getters.user_id == item.owner"
             persistent
             max-width="290"
           >
             <template v-slot:activator="{ on }">
               <v-btn
-                v-if="$store.getters.user_id == item.owner"
                 color="red"
                 dark
                 v-on="on"

@@ -103,7 +103,7 @@ export default new Vuex.Store({
         console.log(payload)
         api.post('/items/new', payload)
           .then(res => {
-            commit('push_new_item', payload)
+            commit('push_new_item', res.data)
             resolve(res)
           })
           .catch(err => {

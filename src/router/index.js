@@ -27,6 +27,14 @@ const routes = [
     component: () => import('../views/SignUp.vue'),
   },
   {
+    path: '/verify/:validation_hash',
+    name: 'Verify',
+    meta: {
+      title: 'Verifiserer e-post'
+    },
+    component: () => import('../views/Verify.vue'),
+  },
+  {
     path: '/search',
     name: 'Search',
     meta: {
@@ -62,6 +70,7 @@ const routes = [
     },
     component: () => import('../views/Dashboard.vue'),
   },
+
   {
     path: '/camera',
     name: 'Camera',
@@ -80,6 +89,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
+    console.log("requires auth")
     if (store.getters.isLoggedIn) {
       next()
       return
