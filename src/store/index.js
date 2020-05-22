@@ -164,19 +164,29 @@ export default new Vuex.Store({
     user_books: state => {
       if (state.user_items.length) return state.user_items.filter(item => item.item_type == 'book')
     },
+    user_skills: state => {
+      if (state.user_items.length) return state.user_items.filter(item => item.item_type == 'skill')
+    },
     loans: state => state.loans,
     loans_by_id: state => {
       return state.loans.map(item => item.item_id)
     },
-    category_name: state => id => state.categories[id],
-    category_map: state => state.categories,
+    category_name: state => id => state.categories.map[id],
+    category_map: state => state.categories.map,
     category_list: state => {
       const category_list = []
-      Object.entries(state.categories).forEach(([key, value]) => {
-        category_list.push({ "id": parseInt(key), "text": value })
+      state.categories.data.forEach(category => {
+        category_list.push({ "id": category.category_id, "text": category.category_title, "parent_id": category.parent_id  })
       })
       return category_list
     },
+    /* category_list: state => {
+      const category_list = []
+      Object.entries(state.categories.map).forEach(([key, value]) => {
+        category_list.push({ "id": parseInt(key), "text": value, "parent":  })
+      })
+      return category_list
+    }, */
     date_options: state => state.date_options
   }
 });

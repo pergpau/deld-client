@@ -3,6 +3,7 @@
     <v-dialog
       v-model="edit_dialog"
       max-width="500px"
+      v-if="local_item"
     >
       <v-card>
         <v-card-title>
@@ -17,7 +18,7 @@
           ></v-select>
 
           <v-select
-            :items="categories"
+            :items="filtered_categories"
             v-model="local_item.category_id"
             label="Kategori"
             item-value='id'
@@ -91,9 +92,9 @@ export default {
       local_item: JSON.parse(JSON.stringify(this.item)),
       categories: [],
       item_types: [
-        { text: 'Ting', value: 'thing' },
-        { text: 'Bok', value: 'book' },
-        { text: 'Kunnskap', value: 'skill' }
+        { text: 'Ting', value: 'thing', id: 1},
+        { text: 'Bok', value: 'book', id: 2},
+        { text: 'Kunnskap', value: 'skill', id: 3}
       ],
     }
   },
@@ -127,6 +128,17 @@ export default {
       handler () {
         this.local_item = JSON.parse(JSON.stringify(this.item))
       }
+    }
+  },
+  computed: {
+    filtered_categories: function () {
+      let filtered = []
+      this.item_types.forEach(item_type => {
+        if (item_type.value == this.local_item.item_type) {
+          filtered = this.categories.filter(function(category) {return category.parent_id == item_type.id})
+        }
+      })
+      return filtered
     }
   },
   mounted () {

@@ -64,6 +64,14 @@
                   item_type='book'
                 ></item-overview>
               </v-tab-item>
+              <v-tab-item>
+                <item-overview
+                  v-bind:rows="this.$store.getters.user_skills"
+                  v-bind:headers="getCurrentHeaders"
+                  v-bind:editable="true"
+                  item_type='skill'
+                ></item-overview>
+              </v-tab-item>
             </v-tabs-items>
           </v-tab-item>
           <v-tab-item>
@@ -102,13 +110,19 @@ export default {
         { text: 'Sist utlånt', value: 'last_loaned_date', width: "1%" },
       ],
       book_headers: [
-        { text: 'Tittel', value: 'title', align: 'start' },
+        { text: 'Kategori', value: 'category_id', align: 'start' },
+        { text: 'Tittel', value: 'title' },
         { text: 'Forfatter', value: 'author' },
         { text: 'Beskrivelse', value: 'description' },
         { text: 'Rating', value: 'rating' },
         { text: 'Status', value: 'on_loan' },
         { text: 'Lånt til', value: 'loaned_to_name' },
         { text: 'Sist utlånt', value: 'last_loaned_date' },
+      ],
+      skill_headers: [
+        { text: 'Kategori', value: 'category_id', align: 'start' },
+        { text: 'Tittel', value: 'title' },
+        { text: 'Beskrivelse', value: 'description' },
       ],
       headers_loans: [
         { text: 'Kategori', value: 'category_id', align: 'start' },
@@ -126,9 +140,14 @@ export default {
     getCurrentHeaders () {
       if (this.sub_tab == 0) {
         return this.item_headers
-      } else {
+      }
+      if (this.sub_tab == 1) {
         return this.book_headers
       }
+      if (this.sub_tab == 2) {
+        return this.skill_headers
+      } 
+      return []
     }
   },
   mounted () {
