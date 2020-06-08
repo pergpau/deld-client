@@ -10,7 +10,7 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || '',
     user: JSON.parse(localStorage.getItem('user')) || {},
     user_items: [],
-    loans: [],
+    user_loans: [],
     categories: null,
     date_options: {
       year: 'numeric', month: 'numeric', day: 'numeric'
@@ -32,13 +32,13 @@ export default new Vuex.Store({
       state.status = ''
       state.token = ''
       state.user_items = []
-      state.loans = []
+      state.user_loans = []
     },
     set_items (state, payload) {
       state.user_items = payload
     },
     set_loans (state, payload) {
-      state.loans = payload
+      state.user_loans = payload
     },
     set_categories (state, payload) {
       state.categories = payload
@@ -80,14 +80,11 @@ export default new Vuex.Store({
           })
       })
     },
-    logout ({ commit }) {
-      return new Promise((resolve) => {
-        commit('logout')
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        delete api.defaults.headers.common['Authorization']
-        resolve()
-      })
+    async logout ({ commit }) {
+      delete api.defaults.headers.common['Authorization']
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      commit('logout')
     },
     async get_user_items ({ commit, getters }) {
       const user_id = getters.user_id
@@ -143,6 +140,24 @@ export default new Vuex.Store({
         console.log(error)
       }
     },
+    async add_trusted_users ({ getters }, payload) {
+      const user_id = getters.user_id
+      const new_trusted_user_ids = payload.map(user => user.user_id)
+      try {
+        await api.post('/user/' + user_id + '/add_trusted_users', new_trusted_user_ids)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async delete_trusted_user ({ getters }, payload) {
+      const user_id = getters.user_id
+      const delete_user_id = payload
+      try {
+        await api.post('/user/' + user_id + '/delete_trusted_user/' + delete_user_id)
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async set_categories ({ commit }) {
       try {
         const categories = await api.get('/categories')
@@ -158,6 +173,7 @@ export default new Vuex.Store({
     authStatus: state => state.status,
     token: state => state.token,
     user_items: state => state.user_items,
+    user_loans: state => state.user_loans,
     user_things: state => {
       if (state.user_items.length) return state.user_items.filter(item => item.item_type == 'thing')
     },
@@ -167,16 +183,15 @@ export default new Vuex.Store({
     user_skills: state => {
       if (state.user_items.length) return state.user_items.filter(item => item.item_type == 'skill')
     },
-    loans: state => state.loans,
     loans_by_id: state => {
-      return state.loans.map(item => item.item_id)
+      return state.user_loans.map(item => item.item_id)
     },
     category_name: state => id => state.categories.map[id],
     category_map: state => state.categories.map,
     category_list: state => {
       const category_list = []
       state.categories.data.forEach(category => {
-        category_list.push({ "id": category.category_id, "text": category.category_title, "parent_id": category.parent_id  })
+        category_list.push({ "id": category.category_id, "text": category.category_title, "parent_id": category.parent_id })
       })
       return category_list
     },

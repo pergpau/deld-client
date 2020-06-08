@@ -8,7 +8,11 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    redirect: '/dashboard'
+    name: 'Landing',
+    meta: {
+      title: 'Forside'
+    },
+    component: () => import('../views/Landing.vue'),
   },
   {
     path: '/login',
@@ -70,6 +74,15 @@ const routes = [
     },
     component: () => import('../views/Dashboard.vue'),
   },
+  {
+    path: '/trust',
+    name: 'Trust',
+    meta: {
+      requiresAuth: true,
+      title: 'Tillit'
+    },
+    component: () => import('../views/Trust.vue'),
+  },
 
   {
     path: '/camera',
@@ -89,12 +102,12 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    console.log("requires auth")
     if (store.getters.isLoggedIn) {
       next()
       return
+    } else {
+      next('/login')
     }
-    next('/login')
   } else {
     next()
   }

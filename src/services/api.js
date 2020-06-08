@@ -26,10 +26,9 @@ api.interceptors.response.use(
   res => { return res },
   err => {
     if (err.response.status == 401) {
-      store.dispatch('logout')
       router.push('/login')
+      store.dispatch('logout')
     }
-
     return Promise.reject(err);
   }
 );

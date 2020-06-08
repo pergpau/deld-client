@@ -4,6 +4,7 @@
       v-model="edit_dialog"
       max-width="500px"
       v-if="local_item"
+      @click:outside="$emit('update:edit_dialog', false)"
     >
       <v-card>
         <v-card-title>

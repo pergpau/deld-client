@@ -8,7 +8,7 @@
         color="primary"
         dark
         justify="right"
-        class="mb-2"
+        class="mb-3 mr-3"
         @click.stop="new_item"
       >Legg til</v-btn>
       <edit-dialog
@@ -17,6 +17,7 @@
         v-bind:form_title="form_title"
         v-bind:item="current_item"
         v-bind:current_index="current_index"
+        @outside_click="edit_dialog = false"
       ></edit-dialog>
     </div>
     <v-data-table
@@ -48,7 +49,7 @@
       <template v-slot:item.on_loan="{ item }">
         <v-chip
           v-if="item.on_loan"
-          color="red"
+          color="accent"
           dark
         >Utlånt</v-chip>
       </template>
@@ -162,11 +163,6 @@ export default {
     },
   },
   computed: {
-    filterOnLoan: function () {
-      return this.rows.filter(function (item) {
-        return item.on_loan == true
-      })
-    },
     formTitle () {
       return this.editedIndex === -1 ? 'Ny' : 'Endre'
     },

@@ -1,20 +1,22 @@
 <template>
   <v-container>
-    <h1 class="pb-3">Søk</h1>
-    <v-spacer></v-spacer>
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Søk her"
-      single-line
-      hide-details
-    ></v-text-field>
-    <item-overview
-      v-bind:rows="search_results"
-      v-bind:headers="headers"
-      :search.sync="search"
-      type="items"
-    ></item-overview>
+    <v-row>
+      <v-col>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Søk her"
+          single-line
+          hide-details
+        ></v-text-field>
+        <item-overview
+          v-bind:rows="search_results"
+          v-bind:headers="headers"
+          :search.sync="search"
+          type="items"
+        ></item-overview>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -28,8 +30,8 @@ export default {
     return {
       search: '',
       headers: [
-        { text: 'Kategori', value: 'category_id', align: 'start', width: "15%"},
-        { text: 'Ting', value: 'title', width: "10%" },
+        { text: 'Kategori', value: 'category_id', align: 'start', width: "15%" },
+        { text: 'Navn', value: 'title', width: "10%" },
         { text: 'Beskrivelse', value: 'description', width: "55%" },
         { text: 'Eier', value: 'first_name', width: "10%" },
         { text: 'Status', value: 'on_loan', width: "10%" },

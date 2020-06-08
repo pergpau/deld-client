@@ -1,14 +1,11 @@
 <template>
-  <div>
+  <v-container>
     <v-row>
-      <v-col
-        cols=12
-        class="ma-0 pa-0"
-      >
+      <v-col class="pa-0">
         <v-tabs
           v-model="tab"
-          centered
           grow
+          
         >
           <v-tab
             v-for="category in categories"
@@ -24,7 +21,7 @@
       <v-col
         sm=6
         xs=12
-        class="pa-0 ma-0"
+        class="pa-0"
         v-if="tab == 0"
       >
         <v-tabs
@@ -42,12 +39,12 @@
         </v-tabs>
       </v-col>
     </v-row>
-    <v-row class="ma-0">
-      <v-col cols=12>
+    <v-row>
+      <v-col class="px-0">
         <v-tabs-items v-model="tab">
           <v-tab-item>
             <v-tabs-items v-model="sub_tab">
-              <v-tab-item>
+              <v-tab-item >
                 <item-overview
                   v-bind:rows="this.$store.getters.user_things"
                   v-bind:headers="getCurrentHeaders"
@@ -74,9 +71,9 @@
               </v-tab-item>
             </v-tabs-items>
           </v-tab-item>
-          <v-tab-item>
+          <v-tab-item >
             <item-overview
-              v-bind:rows="this.$store.getters.loans"
+              v-bind:rows="this.$store.getters.user_loans"
               v-bind:headers="headers_loans"
               v-bind:loan_status="false"
             ></item-overview>
@@ -85,7 +82,7 @@
       </v-col>
     </v-row>
 
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -146,13 +143,14 @@ export default {
       }
       if (this.sub_tab == 2) {
         return this.skill_headers
-      } 
+      }
       return []
     }
   },
   mounted () {
-    this.$store.dispatch('get_user_items')
-    this.$store.dispatch('get_user_loans')
+    if (this.$store.getters.user_items.length === 0) this.$store.dispatch('get_user_items')
+    if (this.$store.getters.user_loans.length === 0) this.$store.dispatch('get_user_loans')
+    
   }
 }
 
