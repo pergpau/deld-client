@@ -66,7 +66,7 @@
                     size="36px"
                     class="ml-2"
                   >
-                    <img :src="showAvatar">
+                    <img :src="$store.getters.avatar_url('36x36')" @error="$event.target.src = $store.getters.noavatar_url('36x36')">
                   </v-avatar>
                 </v-btn>
               </template>
@@ -178,13 +178,9 @@ export default {
     },
   },
   computed: {
-
     showName: function () {
       return this.$store.state.user.first_name
     },
-    showAvatar: function () {
-      return this.$store.state.user.avatar_url
-    }
   }
 }
 </script>

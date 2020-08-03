@@ -8,25 +8,25 @@
       class="mt-10 mx-a"
     >
       <v-card-title class="pb-3">
-          <h3> Bekrefter e-post-adresse...</h3>
+        <h3> Bekrefter e-post-adresse...</h3>
       </v-card-title>
       <v-card-text>
+        <v-alert
+          v-if="errormessage"
+          dense
+          outlined
+          type="error"
+        >
+          {{ this.errormessage}}
+        </v-alert>
+        <v-alert
+          v-if="success_message"
+          outlined
+          type="success"
+        >
+          {{ this.success_message }} {{ this.countdown }}
+        </v-alert>
       </v-card-text>
-      <v-alert
-        v-if="errormessage"
-        dense
-        outlined
-        type="error"
-      >
-        {{ this.errormessage}}
-      </v-alert>
-      <v-alert
-        v-if="success_message"
-        outlined
-        type="success"
-      >
-        {{ this.success_message }} {{ this.countdown }}
-      </v-alert>
 
     </v-card>
   </v-row>

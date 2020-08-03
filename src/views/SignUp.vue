@@ -40,6 +40,7 @@
                 label="Telefonnummer"
                 v-model="phone"
                 :rules="phone_rules"
+                :prefix="country_code"
                 outlined
                 required
               />
@@ -65,8 +66,7 @@
                 @keyup.enter="register"
               />
             </v-form>
-          </v-card-text>
-          <v-alert
+            <v-alert
             v-if="error_message"
             outlined
             type="error"
@@ -78,15 +78,33 @@
             outlined
             type="success"
           >
-            {{ this.success_message }} {{ this.countdown }}
+            {{ this.success_message }}
           </v-alert>
+          </v-card-text>
+          
           <v-card-actions class="justify-center pb-6">
-            <v-btn
-              type="submit"
-              color="accent"
-              @click="register"
-              :disabled="!valid"
-            >Registrer ny bruker</v-btn>
+            <v-dialog
+              v-model="phone_dialog"
+              max-width="400px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-on="on"
+                  type="submit"
+                  color="accent"
+                  @click="register"
+                  :disabled="!valid"
+                >Registrer ny bruker</v-btn>
+              </template>
+              <phone-verification
+                :phone_dialog.sync="phone_dialog"
+                :success_message.sync="success_message"
+                :key="phone"
+                :phone="phone_and_country_code"
+                @close="clear()"
+              ></phone-verification>
+            </v-dialog>
+
           </v-card-actions>
 
         </v-card>
@@ -97,27 +115,23 @@
 
 <script>
 import api from '../services/api.js'
+import PhoneVerification from '../components/PhoneVerification.vue'
 
 export default {
   name: 'SignUp',
   data () {
     return {
+      phone_dialog: false,
       valid: false,
       showPassword: false,
       showPasswordConfirmed: false,
-        email: '',
-        email_rules: [
-          v => !!v || 'Du må skrive e-posten din',
-  
-          v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Adressen må være gyldig',
-          /* v => /.+@.+\.[A-Za-z]+[^0-9]/.test(v) || 'Adressen må være gyldig', */
-        ],
-     /*  username: '',
-      username_rules: [
-        v => !!v || 'Du må skrive et brukernavn',
-        v => v && v.length > 5 || 'Brukernavnet må ha minst 6 tegn',
-        v => /^[0-9a-zA-Z]+$/.test(v) || 'Kun bokstaver og tall er tillatt',
-      ], */
+      country_code: '+47',
+      email: '',
+      email_rules: [
+        v => !!v || 'Du må skrive e-posten din',
+
+        v => (v && /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v)) || 'Adressen må være gyldig',
+      ],
       first_name: '',
       first_name_rules: [
         v => !!v || 'Du må skrive et fornavn'
@@ -129,20 +143,23 @@ export default {
       phone: '',
       phone_rules: [
         v => !!v || 'Du må skrive et telefonnummer',
-        v => /^[0-9/+]+$/.test(v) || 'Kun tall og + er tillatt',
+        v => (v && /^[0-9/+]+$/.test(v)) || 'Kun tall og + er tillatt',
       ],
       password: '',
       password_rules: [
-        v => v.length > 5 || 'Passordet må være 6 tegn eller lengre'
+        v => (v && v.length > 5) || 'Passordet må være 6 tegn eller lengre'
       ],
       password_confirm: '',
       password_confirm_rules: [
         v => !!v || 'Gjenta passordet over',
-        v => v == this.password || 'Begge passordfeltene må være helt like'
+        v => (v && v == this.password) || 'Begge passordfeltene må være helt like'
       ],
       error_message: '',
       success_message: '',
     }
+  },
+  components: {
+    'phone-verification': PhoneVerification,
   },
   methods: {
     register: function () {
@@ -151,14 +168,14 @@ export default {
           email: this.email,
           first_name: this.first_name,
           last_name: this.last_name,
-          phone: this.phone,
+          phone: this.phone_and_country_code,
           password: this.password,
         }
         api.post('/register', user_data)
           .then(() => {
-            this.$refs.form.reset()
             this.error_message = ''
-            this.success_message = 'Du er registrert. Før du kan logge inn må du klikke på lenken vi har sendt deg på e-post. '
+            this.phone_dialog = true
+
           })
           .catch(err => {
             console.log(err)
@@ -166,6 +183,15 @@ export default {
           })
       }
     },
+    clear () {
+      this.$refs.form.reset()
+    }
+
+  },
+  computed: {
+    phone_and_country_code () {
+      return this.country_code + this.phone
+    }
   }
 }
 

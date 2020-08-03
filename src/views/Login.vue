@@ -85,7 +85,7 @@ export default {
           .then(() => this.$router.push('/dashboard'))
           .catch(err => {
             if (err.response.status == 401) {
-              this.errormessage = "Ugyldig brukernavn eller passord"
+              this.errormessage = "Ugyldig brukernavn eller passord. Hvis du er en ny bruker må du også sjekke e-posten vi har sendt deg."
             }
           })
       }

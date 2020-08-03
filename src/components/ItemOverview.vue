@@ -8,9 +8,23 @@
         color="primary"
         dark
         justify="right"
-        class="mb-3 mr-3"
+        class="mb-3 mr-3 hidden-xs-only"
         @click.stop="new_item"
       >Legg til</v-btn>
+      <v-btn
+      class="hidden-sm-and-up"
+        color="primary"
+        dark
+        small
+        fixed
+        bottom
+        right
+        fab
+        @click.stop="new_item"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+
       <edit-dialog
         v-if="current_item"
         :edit_dialog.sync="edit_dialog"
@@ -28,7 +42,13 @@
       :items="rows"
       :sort-desc="[false, true]"
       @click:row="open_item"
+      :footer-props="{itemsPerPageText: 'Treff per side'}"
+      no-results-text="Ingen treff"
     >
+      <template v-slot:no-data>
+        Ingen data å vise
+      </template>
+
       <template v-slot:item.category_id="{ item }">
         <span>{{ $store.getters.category_name(item.category_id) }}</span>
       </template>
@@ -51,6 +71,7 @@
           v-if="item.on_loan"
           color="accent"
           dark
+          small
         >Utlånt</v-chip>
       </template>
       <template v-slot:item.last_loaned_date="{ item }">
@@ -60,7 +81,7 @@
     </v-data-table>
 
     <item-dialog
-      v-if="current_item"
+      v-if="item_dialog"
       :item_dialog.sync="item_dialog"
       v-bind:item="current_item"
       v-bind:current_index="current_index"
@@ -98,7 +119,9 @@
         <v-divider :key="index"></v-divider>
       </template>
     </v-list>
+
   </div>
+
 </template>
 
 <script>

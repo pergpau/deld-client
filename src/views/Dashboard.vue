@@ -44,7 +44,7 @@
         <v-tabs-items v-model="tab">
           <v-tab-item>
             <v-tabs-items v-model="sub_tab">
-              <v-tab-item >
+              <v-tab-item :transition="false" :reverse-transition="false">
                 <item-overview
                   v-bind:rows="this.$store.getters.user_things"
                   v-bind:headers="getCurrentHeaders"
@@ -53,15 +53,15 @@
                 ></item-overview>
 
               </v-tab-item>
-              <v-tab-item>
+              <v-tab-item :transition="false" :reverse-transition="false">
                 <item-overview
                   v-bind:rows="this.$store.getters.user_books"
                   v-bind:headers="getCurrentHeaders"
                   v-bind:editable="true"
                   item_type='book'
                 ></item-overview>
-              </v-tab-item>
-              <v-tab-item>
+              </v-tab-item >
+              <v-tab-item :transition="false" :reverse-transition="false">
                 <item-overview
                   v-bind:rows="this.$store.getters.user_skills"
                   v-bind:headers="getCurrentHeaders"

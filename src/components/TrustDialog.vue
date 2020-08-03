@@ -23,11 +23,12 @@
             item-value='phone'
             flat
             no-filter
+            clearable
             label="Skriv telefonnummeret til personen du vil stole på"
           >
             <template v-slot:item="{ item }">
               <v-list-item-avatar>
-                <v-img :src="item.avatar_url"></v-img>
+                <img :src="$store.getters.person_avatar_url(item.user_id,'36x36')" @error="$event.target.src = $store.getters.noavatar_url('36x36')">
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title v-text="item.first_name + ' ' + item.last_name"></v-list-item-title>
@@ -60,7 +61,7 @@
             :key="person.first_name"
           >
             <v-list-item-avatar>
-              <v-img :src="person.avatar_url"></v-img>
+              <img :src="$store.getters.person_avatar_url(person.user_id,'36x36')" @error="$event.target.src = $store.getters.noavatar_url('36x36')">
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title v-text="person.first_name + ' ' + person.last_name"></v-list-item-title>
@@ -88,6 +89,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
   name: 'TrustDialog',
@@ -134,7 +136,7 @@ export default {
         this.new_trusts.some(user => user.user_id === new_user.user_id)) {
         this.errormessage = 'Du stoler allerede på denne personen'
       } else if (this.$store.getters.user_id === new_user.user_id) {
-        this.errormessage = 'Du bør helst stole på deg selv, men det går ikke på Del-D.'
+        this.errormessage = 'Du bør helst stole på deg selv, men det går ikke på Del-D.no'
       } else {
         this.new_trusts.push(new_user)
       }
@@ -157,7 +159,7 @@ export default {
   },
 
   computed: {
-
+    ...mapState(['avatar_url'])
   },
   mounted () {
   }

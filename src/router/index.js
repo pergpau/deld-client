@@ -85,12 +85,9 @@ const routes = [
   },
 
   {
-    path: '/camera',
-    name: 'Camera',
-    meta: {
-      requiresAuth: true
-    },
-    component: () => import('../views/CameraView.vue'),
+    path: '/phone',
+    name: 'PhoneVerification',
+    component: () => import('../components/PhoneVerification.vue'),
   },
 ];
 

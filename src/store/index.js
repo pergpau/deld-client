@@ -15,6 +15,11 @@ export default new Vuex.Store({
     date_options: {
       year: 'numeric', month: 'numeric', day: 'numeric'
     },
+    avatar_base_url: 'https://storage.googleapis.com/del-d-avatars/users/',
+    item_base_url: 'https://storage.googleapis.com/del-d-items/item/',
+    noavatar_base_url: 'https://storage.googleapis.com/del-d-avatars/noavatar_',
+    noimage_base_url: 'https://storage.googleapis.com/del-d-items/noimage_',
+    avatar_random: Math.floor(Math.random() * 10000) + 1
   },
   mutations: {
     auth_request (state) {
@@ -31,6 +36,7 @@ export default new Vuex.Store({
     logout (state) {
       state.status = ''
       state.token = ''
+      state.user = {}
       state.user_items = []
       state.user_loans = []
     },
@@ -56,6 +62,9 @@ export default new Vuex.Store({
       state.user_items.splice(state.user_items.findIndex(item => {
         return item.item_id === payload;
       }), 1);
+    },
+    update_avatar_random (state) {
+      state.avatar_random = Math.floor(Math.random() * 10000) + 1
     }
   },
   actions: {
@@ -102,6 +111,7 @@ export default new Vuex.Store({
           .then(res => {
             commit('push_new_item', res.data)
             resolve(res)
+            
           })
           .catch(err => {
             reject(err)
@@ -165,6 +175,9 @@ export default new Vuex.Store({
       } catch (error) {
         console.log(error)
       }
+    },
+    update_avatar_random ({ commit }) {
+      commit('update_avatar_random')
     }
   },
   getters: {
@@ -202,6 +215,19 @@ export default new Vuex.Store({
       })
       return category_list
     }, */
-    date_options: state => state.date_options
+    date_options: state => state.date_options,
+    items_url: state => state.items_url,
+    avatar_random: state => state.avatar_random,
+    noavatar_url: state => size => state.noavatar_base_url + size,
+    noimage_url: state => size => state.noimage_base_url + size,
+    avatar_url: state => size => {
+      return state.avatar_base_url + state.user.user_id + '/avatar_' + size + '?' + state.avatar_random
+    },
+    person_avatar_url: state => (user_id, size) => {
+      return state.avatar_base_url + user_id + '/avatar_' + size
+    },
+    image_url: state => (item_id, image_id, size) => {
+      return state.item_base_url + item_id + '/' + image_id + '_' + size
+    }
   }
 });
